@@ -1,4 +1,3 @@
-// MongoDB utils
 const { MongoClient } = require('mongodb');
 
 class DBClient {
@@ -9,22 +8,42 @@ class DBClient {
     const url = `mongodb://${host}:${port}`;
 
     this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    this.client.connect().then(() => {
-      this.db = this.client.db(database);
-    }).catch((err) => {
-      console.error('Failed to connect to MongoDB', err);
-    });
+    this.db = null;
+
+    this.connect()
+      .then(() => {
+        console.log('Connected to MongoDB');
+      })
+      .catch((err) => {
+        console.error('Failed to connect to MongoDB', err);
+      });
   }
 
-  isAlive() {
-    return this.client.isConnected();
+  async connect() {
+    try {
+      await this.client.connect();
+      this.db = this.client.db(database);
+    } catch (err) {
+      console.error('Error connecting to MongoDB:', err);
+      throw err;
+    }
+  }
+
+  async isAlive() {
+    return this.db !== null && this.client.isConnected();
   }
 
   async nbUsers() {
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
     return this.db.collection('users').countDocuments();
   }
 
   async nbFiles() {
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
     return this.db.collection('files').countDocuments();
   }
 }
