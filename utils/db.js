@@ -29,7 +29,7 @@ class DBClient {
     }
   }
 
-  async isAlive() {
+  isAlive() {
     return this.db !== null && this.client.isConnected();
   }
 
