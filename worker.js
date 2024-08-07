@@ -7,6 +7,7 @@ const thumbnail = require('image-thumbnail');
 const dbClient = require('./utils/db');
 
 const fileQueue = new Bull('fileQueue');
+const userQueue = new Bull('userQueue');
 
 fileQueue.process(async (job) => {
   const { userId, fileId } = job.data;
@@ -55,3 +56,28 @@ fileQueue.process(async (job) => {
 });
 
 console.log('Thumbnail worker started');
+
+userQueue.process(async (job) => {
+  const { userId } = job.data;
+  
+  if (!userId) {
+    throw new Error('Missing userId');
+  }
+  
+  // Fetch user from the database
+  const user = await dbClient.getUserById(userId);
+  
+  if (!user) {
+    throw new Error('User not found');
+  }
+  
+  // Print welcome message
+  console.log(`Welcome ${user.email}!`);
+});
+
+// Handle queue errors
+userQueue.on('error', (error) => {
+  console.error('Queue error:', error);
+});
+
+module.exports = { fileQueue, userQueue };

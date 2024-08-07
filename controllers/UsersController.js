@@ -27,6 +27,9 @@ class UsersController {
     const userId = result.insertedId;
     const user = await (await dbClient.usersCollection()).findOne({ _id: userId });
 
+    // Start background processing for sending welcome email
+    userQueue.add({ userId });
+
     res.status(201).json({ id: user._id, email: user.email });
   }
 

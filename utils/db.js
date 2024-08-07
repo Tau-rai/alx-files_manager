@@ -62,6 +62,13 @@ class DBClient {
     }
     return this.db.collection('files').insertOne(fileData);
   }
+
+  async usersCollection() {
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
+    return this.db.collection('users');
+  }
 }
 
 const dbClient = new DBClient();
