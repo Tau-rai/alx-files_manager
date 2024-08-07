@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
-const AuthController = {
-  getConnect: async (req, res) => {
+class AuthController {
+  static async getConnect(req, res) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Basic ')) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -29,16 +29,22 @@ const AuthController = {
 
       const token = uuidv4();
       const redisKey = `auth_${token}`;
-      await redisClient.set(redisKey, user.id, 'EX', 24 * 60 * 60); // Set token in Redis for 24 hours
 
-      return res.status(200).json({ token }); // Added return
+      try {
+        await redisClient.set(redisKey, user.id, 'EX', 24 * 60 * 60); // Set token in Redis for 24 hours
+      } catch (err) {
+        console.error('Redis error:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      return res.status(200).json({ token });
     } catch (err) {
       console.error('Error in getConnect:', err);
-      return res.status(500).json({ error: 'Internal Server Error' }); // Added return
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-  },
+  }
 
-  getDisconnect: async (req, res) => {
+  static async getDisconnect(req, res) {
     const token = req.headers['x-token'];
 
     if (!token) {
@@ -54,12 +60,12 @@ const AuthController = {
       }
 
       await redisClient.del(redisKey);
-      return res.status(204).send(); // Added return
+      return res.status(204).send();
     } catch (err) {
       console.error('Error in getDisconnect:', err);
-      return res.status(500).json({ error: 'Internal Server Error' }); // Added return
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-  },
-};
+  }
+}
 
 module.exports = AuthController;
