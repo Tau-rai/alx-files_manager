@@ -24,10 +24,10 @@ class UsersController {
     const hashedPassword = sha1(uPassword);
     const result = await (await dbClient.usersCollection())
       .insertOne({ email: uEmail, password: hashedPassword });
-      const userId = result.insertedId;
-      const user = await (await dbClient.usersCollection()).findOne({ _id: userId });
-      
-      res.status(201).json({ id: user._id, email: user.email });
+    const userId = result.insertedId;
+    const user = await (await dbClient.usersCollection()).findOne({ _id: userId });
+
+    res.status(201).json({ id: user._id, email: user.email });
   }
 
   static async getMe(req, res) {
