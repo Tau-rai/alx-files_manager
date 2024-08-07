@@ -1,6 +1,6 @@
 // App Controllers
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
 const AppController = {
   getStatus: async (req, res) => {

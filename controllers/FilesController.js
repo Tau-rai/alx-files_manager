@@ -1,10 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const uuid = require('uuid');
-const mime = require('mime-types');
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
-const fileQueue = require('../utils/fileQueue');
+// filesController.js
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuid } from 'uuid';
+import mime from 'mime-types';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
+import fileQueue from '../utils/fileQueue';
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 
