@@ -1,9 +1,9 @@
 // Users Controller
-const sha1 = require('sha1');
-const dbClient = require('../utils/db');
+import sha1 from 'sha1';
+import dbClient from '../utils/db';
 
-const UsersController = {
-  postNew: async (req, res) => {
+class UsersController {
+  static async postNew(req, res) {
     try {
       const { email, password } = req.body;
       if (!email) return res.status(400).send({ error: 'Missing email' });
@@ -19,9 +19,9 @@ const UsersController = {
     } catch (error) {
       return res.status(500).send({ error: 'Internal server error' });
     }
-  },
+  }
 
-  getMe: async (req, res) => {
+  static async getMe(req, res) {
     try {
       const { userId } = req;
       const user = await dbClient.users.findOne({ _id: userId });
@@ -30,7 +30,7 @@ const UsersController = {
     } catch (error) {
       return res.status(500).send({ error: 'Internal server error' });
     }
-  },
-};
+  }
+}
 
 module.exports = UsersController;
