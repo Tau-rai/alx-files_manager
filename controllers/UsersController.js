@@ -1,7 +1,7 @@
 // Users Controller
 import sha1 from 'sha1';
-import dbClient from '../utils/db';
 import Bull from 'bull';
+import dbClient from '../utils/db';
 
 const userQueue = new Bull('userQueue');
 

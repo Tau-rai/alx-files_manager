@@ -59,18 +59,18 @@ console.log('Thumbnail worker started');
 
 userQueue.process(async (job) => {
   const { userId } = job.data;
-  
+
   if (!userId) {
     throw new Error('Missing userId');
   }
-  
+
   // Fetch user from the database
   const user = await dbClient.getUserById(userId);
-  
+
   if (!user) {
     throw new Error('User not found');
   }
-  
+
   // Print welcome message
   console.log(`Welcome ${user.email}!`);
 });
